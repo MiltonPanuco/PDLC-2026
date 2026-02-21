@@ -1,0 +1,19 @@
+🚀 Iniciando monitor en https://jsonplaceholder.typicode.com/posts...
+🔄 [200 OK] Datos nuevos. Reset intervalo a 5s
+📺 [UI] Actualizando lista de 100 productos.
+🚨 [ALERTA] Producto con ID 1 está crítico.
+
+😴 [304] Sin cambios. Backoff: 7.50s
+# (Simulando pérdida de conexión)
+⏳ [Timeout] Servidor lento. Backoff: 15.00s
+📝 [LOG 15:42:10] Evento: La petición expiró
+
+# (Simulando error en el backend de EcoMarket)
+⚠️ [500] Error servidor. Backoff: 30.00s
+📝 [LOG 15:42:40] Evento: Error 500
+
+🛑 Deteniendo monitor limpiamente...
+
+# PRUEBA DE DESACOPLAMIENTO:
+# Agregué observador_logs y observador_alertas sin tocar la clase ServicioPolling. ✓
+# ServicioPolling notifica eventos genéricos, cumpliendo el patrón Observer. ✓

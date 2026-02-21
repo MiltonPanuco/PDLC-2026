@@ -1,0 +1,203 @@
+# =============================================================================
+# CONTRATO OPENAPI - ECOMARKET V1
+# -----------------------------------------------------------------------------
+# MEJORAS INCLUIDAS:
+# 1. Uso de 'multipleOf: 0.01' en Precios: Garantiza integridad financiera a 
+#    nivel de contrato, impidiendo que entren valores con más de 2 decimales.
+# 2. Separación de 'Producto' y 'ProductoInput': Evita "Mass Assignment" o 
+#    asignación masiva, impidiendo que el cliente intente definir el ID o la 
+#    fecha de creación manualmente al crear un producto.
+# =============================================================================
+
+openapi: 3.0.0
+info:
+  title: EcoMarket API
+  description: Plataforma para conectar productores locales de alimentos orgánicos con consumidores.
+  version: 1.0.0
+  contact:
+    name: Arquitectura de APIs
+    email: dev-team@ecomarket.com
+
+servers:
+  - url: https://api.ecomarket.com/v1
+    description: Servidor de desarrollo/demo
+
+paths:
+  /productos:
+    get:
+      summary: Listar productos disponibles
+      description: Obtiene el catálogo de productos. Permite filtrar por categoría y productor.
+      tags:
+        - Productos
+      parameters:
+        - name: categoria
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Categoria'
+        - name: productor_id
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 42
+      responses:
+        '200':
+          description: Lista de productos exitosa.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Producto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+    post:
+      summary: Crear un nuevo producto
+      description: Registra un producto en la plataforma. Requiere autenticación Bearer JWT.
+      tags:
+        - Productos
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoInput'
+      responses:
+        '201':
+          description: Producto creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /productos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Detalle del producto
+      description: Obtiene toda la información técnica y comercial de un producto único.
+      tags:
+        - Productos
+      responses:
+        '200':
+          description: Datos del producto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Categoria:
+      type: string
+      enum: [frutas, verduras, lacteos, miel, conservas]
+      example: frutas
+
+    Producto:
+      type: object
+      required: [id, nombre, precio, categoria, productor_id, disponible, creado_en]
+      properties:
+        id:
+          type: integer
+          example: 101
+        nombre:
+          type: string
+          example: "Tomate Manzano"
+        descripcion:
+          type: string
+          example: "Cultivado en invernadero orgánico."
+        precio:
+          type: number
+          format: float
+          multipleOf: 0.01
+          example: 35.50
+        categoria:
+          $ref: '#/components/schemas/Categoria'
+        productor_id:
+          type: integer
+          example: 42
+        disponible:
+          type: boolean
+          example: true
+        creado_en:
+          type: string
+          format: date-time
+          example: "2026-01-23T15:00:00Z"
+
+    ProductoInput:
+      type: object
+      required: [nombre, precio, categoria, productor_id]
+      properties:
+        nombre:
+          type: string
+          example: "Miel de Azahar"
+        descripcion:
+          type: string
+        precio:
+          type: number
+          multipleOf: 0.01
+          example: 150.00
+        categoria:
+          $ref: '#/components/schemas/Categoria'
+        productor_id:
+          type: integer
+        disponible:
+          type: boolean
+          default: true
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        mensaje:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Error en la petición.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "VALIDATION_ERROR"
+            mensaje: "La categoría enviada no existe."
+    Unauthorized:
+      description: Token ausente o inválido.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "UNAUTHORIZED"
+            mensaje: "Acceso denegado. Token no válido."
+    NotFound:
+      description: Recurso no encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "NOT_FOUND"
+            mensaje: "El producto solicitado no existe en la base de datos."
