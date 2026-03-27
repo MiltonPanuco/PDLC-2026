@@ -1,0 +1,29 @@
+--- 🛡️ INICIANDO SUITE DE PRUEBAS DE ROBUSTEZ (QA) ---
+
+[ESCENARIO 1: Datos Malformados]
+📥 Input: data: ERROR_500_INTERNAL_JSON_INVALID
+⚠️ [SISTEMA] Error de parseo en bloque id:10. Contenido no es JSON.
+✅ RESULTADO: El cliente ignoró el error y mantuvo el stream abierto.
+
+[ESCENARIO 2: Reconexión con Last-Event-ID]
+🔌 Evento id:5 recibido. Simulando caída de socket...
+🔄 Reintentando conexión 1/5...
+📡 Request Header enviado -> Last-Event-ID: 5
+✅ RESULTADO: El servidor retomó desde el evento 6. Sin pérdida de datos.
+
+[ESCENARIO 3: Evento Desconocido]
+📥 Input: event: alerta-fraude | data: {"nivel": "alto"}
+🔍 Evento 'alerta-fraude' recibido pero ignorado (sin handler).
+✅ RESULTADO: El router manejó la ausencia del callback sin lanzar excepciones.
+
+[ESCENARIO 4: Doble Inicio (Race Condition)]
+🚀 Estado actual: CONECTADO.
+🔥 Intento de llamada secundaria a iniciar()...
+⚠️ [SISTEMA] Bloqueo de seguridad: Ya existe una conexión activa para este objeto.
+✅ RESULTADO: Se evitó la creación de conexiones zombis y el desperdicio de sockets.
+
+--- 📝 NOTA DE AUDITORÍA FINAL ---
+Escenario 4 fallido inicialmente → corrección aplicada: Se implementó una 
+guardia de estado (Máquina de Estados) que valida si el cliente ya está 
+'CONECTADO' antes de permitir un nuevo bucle de red.
+--------------------------------------------------

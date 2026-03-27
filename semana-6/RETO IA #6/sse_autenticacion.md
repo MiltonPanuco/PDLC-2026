@@ -26,7 +26,7 @@ debe ser capaz de "despertar", pedir un pase nuevo y seguir escuchando.Pythonasy
                     
                     # 2. Si el guardia (server) nos saca porque el token ya no sirve
                     if respuesta.status_code == 401:
-                        print("🔑 El token ya caducó. Pidiendo uno nuevo...")
+                        print("🔑 El token ya gitcaducó. Pidiendo uno nuevo...")
                         mi_token = await gestor_auth.actualizar_token()
                         continue # Volvemos a intentar la conexión
                     

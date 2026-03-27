@@ -26,7 +26,7 @@ BACKOFF ADAPTATIVO (1.5x / 2x)
 
 import asyncio
 import time
-import httpx  # Requiere: pip install httpx
+import httpx  
 
 class Observable:
     """Implementación del Patrón Observer para desacoplar lógica."""
