@@ -1,0 +1,19 @@
+🚀 [14:40:01] Conectando al Stream de EcoMarket...
+✅ Conexión establecida.
+
+# Evento 1: Tipo precio-actualizado
+📺 [INTERFAZ] Renderizando producto: {"id":"A01", "precio":45}
+📝 [LOGS] Evento guardado en base de datos local.
+
+# Evento 2: Tipo stock-critico
+🚨 [ALERTA] ¡Stock Crítico detectado!
+📝 [LOGS] Evento guardado en base de datos local.
+
+# Evento 3: Tipo genérico (message)
+📝 [LOGS] Evento guardado en base de datos local.
+
+# Simulación de Error de Red y Reconexión
+🔌 [14:40:45] Error de red. Reintento en 2s...
+🚀 [14:40:47] Conectando al Stream de EcoMarket...
+📡 Enviando Header: Last-Event-ID: 2
+✅ Conexión restablecida.

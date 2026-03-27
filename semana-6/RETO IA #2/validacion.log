@@ -1,0 +1,11 @@
+🚀 [18:30:01] Iniciando Receptor...
+✅ [18:30:02] Canal abierto.
+💰 [PRECIO] Producto A01 actualizado a $47
+⚠️ [STOCK] ¡URGENTE! Producto B07 quedan 1 unidades.
+🔍 [INFO] Evento 'keep-alive' recibido (sin manejador específico).
+💰 [PRECIO] Producto A01 actualizado a $45
+🔌 [18:30:25] Conexión perdida: RemoteProtocolError('peer closed connection')
+🔄 Reintentando en 3.0s... (Intento 1/5)
+📡 [18:30:28] Reintentando con Last-Event-ID: 3
+✅ [18:30:29] Canal restablecido. Retomando flujo...
+💰 [PRECIO] Producto C12 actualizado a $120
