@@ -1,0 +1,64 @@
+=======================================================================
+🔋 INICIANDO SCRIPT DE DEMOSTRACIÓN DE RESILIENCIA (EcoMarket 2026)
+Estudiante: VAZQUEZ TALAVERA MARIA BELEN (Matrícula: 24213132)
+=======================================================================
+
+[Sistema] Servidor Mock desplegado con éxito en http://localhost:8080
+
+--- SECUENCIA 1: Servidor Operando en Modo Normal ---
+   [MOCK SERVIDOR] Recibida Petición #1 | Modo Actual = normal
+ -> Resultado recibido por la UI: {'productos': 42, 'timestamp': 'ahora'}
+
+   [MOCK SERVIDOR] Recibida Petición #2 | Modo Actual = normal
+ -> Resultado recibido por la UI: {'productos': 42, 'timestamp': 'ahora'}
+
+   [MOCK SERVIDOR] Recibida Petición #3 | Modo Actual = normal
+ -> Resultado recibido por la UI: {'productos': 42, 'timestamp': 'ahora'}
+
+--- SECUENCIA 2: Activación del Modo 'fallo_503' (Inyección de Fallas) ---
+[UI] Disparando petición ejecutada #1...
+   [MOCK SERVIDOR] Recibida Petición #4 | Modo Actual = fallo_503
+[CircuitBreaker] Fallo de infraestructura detectado. Código: 503. Conteo consecutivo: 1/3
+ -> Resultado recibido por la UI: {'status': 'http_error', 'code': 503}
+
+[UI] Disparando petición ejecutada #2...
+   [MOCK SERVIDOR] Recibida Petición #5 | Modo Actual = fallo_503
+[CircuitBreaker] Fallo de infraestructura detectado. Código: 503. Conteo consecutivo: 2/3
+ -> Resultado recibido por la UI: {'status': 'http_error', 'code': 503}
+
+[UI] Disparando petición ejecutada #3...
+   [MOCK SERVIDOR] Recibida Petición #6 | Modo Actual = fallo_503
+[CircuitBreaker] Fallo de infraestructura detectado. Código: 503. Conteo consecutivo: 3/3
+
+[CircuitBreaker] 15:58:56 - ALERTA: Umbral de tolerancia superado.
+[CircuitBreaker] Transición: CERRADO ──> ABIERTO. Tráfico bloqueado localmente por 3.0s.
+ -> Resultado recibido por la UI: {'status': 'http_error', 'code': 503}
+
+[UI] Disparando petición ejecutada #4...
+[ClienteRobusto] -> PETICIÓN ABORTADA LOCALMENTE: Circuit Breaker está ABIERTO. Petición bloqueada localmente de forma preventiva.
+ -> Resultado recibido por la UI: {'status': 'blocked_by_circuit_breaker', 'error': 'Circuit Breaker está ABIERTO. Petición bloqueada localmente de forma preventiva.'}
+
+--- SECUENCIA 3: Aislamiento Fail-Fast y Espera del Timeout de Recuperación ---
+[UI] El usuario intenta dar clic al botón de actualizar datos de manera inmediata...
+[ClienteRobusto] -> PETICIÓN ABORTADA LOCALMENTE: Circuit Breaker está ABIERTO. Petición bloqueada localmente de forma preventiva.
+ -> Resultado recibido por la UI: {'status': 'blocked_by_circuit_breaker', 'error': 'Circuit Breaker está ABIERTO. Petición bloqueada localmente de forma preventiva.'}
+
+[Sistema] Congelando tráfico y esperando 3.2 segundos (Superando recovery_timeout de 3s)...
+
+--- SECUENCIA 4: Restauración del Modo Normal und Prueba Canary de Éxito ---
+
+[CircuitBreaker] 15:59:00 - Tiempo de aislamiento vencido.
+[CircuitBreaker] Transición: ABIERTO ──> SEMIABIERTO. Habilitando petición de prueba (Canary)...
+[UI] Disparando petición de renovación tras la espera...
+   [MOCK SERVIDOR] Recibida Petición #7 | Modo Actual = normal
+[CircuitBreaker] 15:59:00 - ¡Petición Canary exitosa!
+[CircuitBreaker] Transición: SEMIABIERTO ──> CERRADO. Flujo de red totalmente restaurado.
+ -> Resultado recibido por la UI en Canary: {'productos': 42, 'timestamp': 'ahora'}
+
+[UI] Disparando petición ordinaria con el circuito re-establecido...
+   [MOCK SERVIDOR] Recibida Petición #8 | Modo Actual = normal
+ -> Resultado recibido por la UI: {'productos': 42, 'timestamp': 'ahora'}
+
+=======================================================================
+🏁 SECUENCIA DE AUDITORÍA CONCLUIDA EXITOSAMENTE.
+=======================================================================

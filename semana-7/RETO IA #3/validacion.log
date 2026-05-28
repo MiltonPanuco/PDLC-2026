@@ -1,0 +1,10 @@
+--- INICIANDO VALIDACIÓN DE FLUJO ---
+🚀 Conectando a módulos: precios, inventario
+💰 Precio actualizado: P-042 (89.0 -> 79.5)
+⚠️ Stock reportado: 3 unidades [CRITICO 🔴]
+❌ ERROR en Handler [precio-actualizado]: Fallo forzado para validación de robustez
+⚠️ Stock reportado: 8 unidades [BAJO 🟡]
+💓 Heartbeat recibido: 2026-03-27T15:00:00Z
+🔌 Fallo de red. Reintento 1 en 2s...
+📡 Reabriendo con Last-Event-ID: evt-005
+--- VALIDACIÓN FINALIZADA ---
