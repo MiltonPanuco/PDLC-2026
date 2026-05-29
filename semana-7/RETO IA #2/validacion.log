@@ -1,0 +1,11 @@
+--- INICIANDO VALIDACIÓN DE FLUJO ---
+💰 [ALERTA PRECIO] A1 cambió 10.0%
+⚠️ [STOCK CRITICO 🔴] B2: 2 unidades.
+📦 [PEDIDO VIP] ID: P-99 por $750
+💓 [SISTEMA] Heartbeat: 2026-03-27T15:00:00Z
+
+❌ ERROR en Handler [precio-actualizado]: Fallo forzado para validación de robustez
+
+⚠️ [STOCK BAJO 🟡] C3: 8 unidades.
+🔍 Evento 'message' ignorado (sin handler).
+--- VALIDACIÓN FINALIZADA CON ÉXITO ---

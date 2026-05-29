@@ -1,0 +1,11 @@
+[?1] El componente que revisa el token es el TokenManager mediante el método is_expiring_soon(). Si ya va a caducar, se manda llamar al método refresh_access_token() que él mismo tiene programado.
+
+[?2] Salida A: Las peticiones extras que entren al mismo tiempo rebotan de inmediato con un error CircuitOpenError porque el único espacio de prueba ya se ocupó.
+     Salida B: La petición de prueba pasa directo hacia el servidor mock para ver si ya responde.
+     Salida C: Si la petición responde bien, el circuito se cierra de nuevo; si da error de red, el circuito se vuelve a abrir por completo.
+
+[?3] Cuando la petición tiene éxito, ocurre la transición de SEMIABIERTO a CERRADO. La ejecuta el método _on_exito() y el atributo que se limpia es el contador de fallas consecutivas, poniéndose en cero.
+
+[?4] No se interrumpe. El flujo de alertas de SSE corre por un cable o canal totalmente separado de las peticiones HTTP comunes, por lo que las decisiones del Circuit Breaker no afectan la conexión que ya tiene el ClienteSSEMultiplex.
+
+[?5] No, el TokenManager no se entera de que el circuito se cerró. Por la regla de aislamiento INV-B1, el manejador de tokens no guarda ni revisa ninguna variable que tenga que ver con el estado del disyuntor.

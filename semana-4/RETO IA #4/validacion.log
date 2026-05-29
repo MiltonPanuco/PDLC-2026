@@ -1,0 +1,30 @@
+🚀 Iniciando monitor en https://api.ecomarket.com/v1/productos...
+
+# --- ESCENARIO A: El Servidor Lento (Timeout) ---
+⏳ [LOG 10:00:10] Evento: La petición expiró (Timeout > 10s alcanzado)
+⚠️ [ERROR] La tortuga ganó: El servidor no respondió a tiempo.
+😴 [BACKOFF] Incrementando espera a 10.0s para dar respiro al servidor.
+
+# --- ESCENARIO B: Formato Incorrecto (HTML en vez de JSON) ---
+🔄 [LOG 10:00:20] Petición enviada...
+❌ [ERROR] Datos corruptos: Se esperaba JSON pero se recibió HTML.
+📝 [DETALLE] ParseError: 'Expecting value: line 1 column 1 (char 0)'
+😴 [BACKOFF] Incrementando espera a 15.0s.
+
+# --- ESCENARIO C: Observador Roto (Excepción en Callback) ---
+🔄 [LOG 10:00:35] [200 OK] Datos nuevos recibidos. ETag: "xyz789"
+❌ Error en observador: NameError: name 'variable_inexistente' is not defined
+✅ [RESILIENCIA] El observador de UI falló, pero el ciclo de polling continúa vivo.
+📺 [UI] Actualizando lista de 45 productos.
+
+# --- ESCENARIO D: Datos Nulos (200 OK pero productos=null) ---
+🔄 [LOG 10:00:40] [200 OK] Conexión establecida.
+⚠️ [ALERTA] El campo 'productos' es nulo. Verificando contrato de API...
+📝 [LOG 10:00:41] Evento registrado: Respuesta vacía del servidor.
+
+🛑 Deteniendo monitor limpiamente...
+📝 [LOG 10:00:45] Evento: Polling detenido por el usuario. Flag _activo = False.
+
+# PRUEBA DE DESACOPLAMIENTO:
+# Agregué observador_4 y lo quité sin modificar ServicioPolling. ✓
+# ServicioPolling no tiene referencia directa a ningún observador. ✓
